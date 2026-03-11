@@ -4,7 +4,8 @@ BrowserTrace DFIR is a forensic-safe browser artifact triage tool designed for d
 
 # Forensic Report Example
 
-![BrowserTrace Report](images/report_example.png)
+
+<img width="1601" height="903" alt="gfdhgghddhdhgdghdhd" src="https://github.com/user-attachments/assets/3b61ee83-5f66-4035-adcf-81d0fdc4fd63" />
 
 
 The tool automatically discovers browser profiles, safely acquires key artifacts and produces structured investigation outputs including timelines, domain analysis and evidence graphs.
@@ -67,6 +68,7 @@ Artifacts are acquired through forensic-safe copying and hashed using SHA256.
 
 # Example Execution
 
+<img width="1601" height="903" alt="gfdhgghddhdhgdghdhd" src="https://github.com/user-attachments/assets/728c8674-1c5f-4ae2-a224-f87889dfa111" />
 
 # Output Artifacts
 ![BrowserTrace Run Example](images/browsertrace_run_example.png)
@@ -108,12 +110,11 @@ suspicious domain indicators
 Timeline Reconstruction
 timeline.html
 
-<p align="center">
-<img src="images/timeline_example.png" width="900">
-</p>
+
 ## Investigation Timeline
 BrowserTrace reconstructs a chronological timeline of browser activity including visited pages and downloads.
 
+<img width="1370" height="822" alt="ghfghfghfhdkdk" src="https://github.com/user-attachments/assets/2205fe4f-9e2e-45d3-babd-ceb7f91475d8" />
 
 
 # Chronological reconstruction of:
@@ -136,11 +137,8 @@ threat hunting
 graph.html
 BrowserTrace builds an investigation graph connecting user, browsers, profiles, domains, extensions and downloads.
 
-<p align="center">
-<img src="imag
-es/graph_example.png" width="900">
-</p>
 
+<img width="1583" height="919" alt="sghfsjhfsjhfshfjshfjs" src="https://github.com/user-attachments/assets/d4623ee2-efce-47f5-abbd-4b9276aae275" />
 
 # Interactive visualization connecting:
 
