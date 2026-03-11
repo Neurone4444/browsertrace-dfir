@@ -68,7 +68,8 @@ Artifacts are acquired through forensic-safe copying and hashed using SHA256.
 
 # Example Execution
 
-<img width="1601" height="903" alt="gfdhgghddhdhgdghdhd" src="https://github.com/user-attachments/assets/728c8674-1c5f-4ae2-a224-f87889dfa111" />
+<img width="724" height="308" alt="dfdasfsdfsfdfsddfssdf" src="https://github.com/user-attachments/assets/e35407c8-d142-4748-b854-cf7566114f76" />
+
 
 # Output Artifacts
 
