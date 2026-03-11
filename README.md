@@ -71,7 +71,6 @@ Artifacts are acquired through forensic-safe copying and hashed using SHA256.
 <img width="1601" height="903" alt="gfdhgghddhdhgdghdhd" src="https://github.com/user-attachments/assets/728c8674-1c5f-4ae2-a224-f87889dfa111" />
 
 # Output Artifacts
-![BrowserTrace Run Example](images/browsertrace_run_example.png)
 
 Running the tool generates a structured investigation folder.
 
