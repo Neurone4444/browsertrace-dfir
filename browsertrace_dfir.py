@@ -6,6 +6,7 @@ Single-file forensic browser artifact collector / triage tool
 
 Features:
   - Discover Chromium and Firefox profiles
+  - Optional offline analysis of a manually supplied profile path
   - Forensic-safe acquisition by copying artifacts
   - SHA256 hashing of acquired files
   - Parse:
@@ -58,7 +59,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
 APP_NAME = "BrowserTrace DFIR"
-APP_VERSION = "2.1.0"
+APP_VERSION = "2.2.0"
 
 # =============================================================================
 # Utility
@@ -294,6 +295,40 @@ def discover_firefox_profiles() -> List[Dict[str, Any]]:
             })
 
     return profiles
+
+def build_manual_profile(profile_path: Path, profile_type: str) -> Dict[str, Any]:
+    """
+    Build a synthetic profile descriptor from a manually supplied profile path.
+    """
+    profile_path = profile_path.resolve()
+    profile_name = profile_path.name or "manual_profile"
+
+    if profile_type == "chromium":
+        return {
+            "browser_family": "chromium",
+            "browser": "manual-chromium",
+            "profile_name": profile_name,
+            "profile_path": str(profile_path),
+            "artifacts": {
+                "history": str(profile_path / "History"),
+                "bookmarks": str(profile_path / "Bookmarks"),
+                "extensions_dir": str(profile_path / "Extensions"),
+            }
+        }
+
+    if profile_type == "firefox":
+        return {
+            "browser_family": "firefox",
+            "browser": "manual-firefox",
+            "profile_name": profile_name,
+            "profile_path": str(profile_path),
+            "artifacts": {
+                "places": str(profile_path / "places.sqlite"),
+                "extensions_json": str(profile_path / "extensions.json"),
+            }
+        }
+
+    raise ValueError(f"Unsupported profile type: {profile_type}")
 
 # =============================================================================
 # Chromium parsers
@@ -1447,9 +1482,13 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--output-dir", default="browsertrace_output", help="Output directory")
     parser.add_argument("--browser", default="all", choices=["all", "chromium", "firefox"],
-                        help="Browser family to scan")
+                        help="Browser family to scan when using automatic discovery")
     parser.add_argument("--limit-profiles", type=int, default=0,
                         help="Optional limit on number of profiles processed")
+    parser.add_argument("--profile-path", default="",
+                        help="Optional path to a manually supplied browser profile directory")
+    parser.add_argument("--profile-type", default="", choices=["", "chromium", "firefox"],
+                        help="Required with --profile-path: profile family of the supplied profile")
     return parser.parse_args()
 
 def main() -> int:
@@ -1462,13 +1501,24 @@ def main() -> int:
 
     discovered: List[Dict[str, Any]] = []
 
-    if args.browser in ("all", "chromium"):
-        discovered.extend(discover_chromium_profiles())
-    if args.browser in ("all", "firefox"):
-        discovered.extend(discover_firefox_profiles())
+    if args.profile_path:
+        manual_profile_path = Path(args.profile_path)
+        if not manual_profile_path.exists() or not manual_profile_path.is_dir():
+            print(f"[!] Invalid --profile-path: {manual_profile_path}")
+            return 1
+        if not args.profile_type:
+            print("[!] --profile-type is required when using --profile-path (chromium or firefox)")
+            return 1
 
-    if args.limit_profiles and args.limit_profiles > 0:
-        discovered = discovered[:args.limit_profiles]
+        discovered.append(build_manual_profile(manual_profile_path, args.profile_type))
+    else:
+        if args.browser in ("all", "chromium"):
+            discovered.extend(discover_chromium_profiles())
+        if args.browser in ("all", "firefox"):
+            discovered.extend(discover_firefox_profiles())
+
+        if args.limit_profiles and args.limit_profiles > 0:
+            discovered = discovered[:args.limit_profiles]
 
     profile_reports: List[Dict[str, Any]] = []
     for profile in discovered:
@@ -1497,6 +1547,7 @@ def main() -> int:
         },
         "profiles_discovered": len(discovered),
         "profiles": discovered,
+        "mode": "manual-profile" if args.profile_path else "automatic-discovery",
         "extra_outputs": [
             "report.html",
             "report.json",
@@ -1576,6 +1627,7 @@ def main() -> int:
     print(f"[+] Graph JSON : {graph_json_path}")
     print(f"[+] Graph HTML : {graph_html_path}")
     print(f"[+] Profiles scanned : {len(profile_reports)}")
+    print(f"[+] Mode : {'manual-profile' if args.profile_path else 'automatic-discovery'}")
 
     return 0
 
