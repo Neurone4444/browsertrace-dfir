@@ -1,6 +1,6 @@
 # BrowserTrace DFIR
 
-BrowserTrace DFIR is a forensic-safe browser artifact triage tool designed for digital forensics, incident response and security investigations.
+BrowserTrace DFIR supports both **live response triage** and **offline browser artifact analysis**, making it suitable for quick incident response as well as post-acquisition forensic review.
 
 # Forensic Report Example
 
@@ -204,6 +204,7 @@ Scan only Firefox
 python browsertrace_dfir.py --browser firefox
 Limit number of processed profiles
 python browsertrace_dfir.py --limit-profiles 2
+offline analysis of copied browser profiles
 Example Output
 [+] BrowserTrace DFIR completed
 [+] Output directory : browsertrace_output
@@ -217,6 +218,19 @@ Example Output
 [+] Graph HTML : browsertrace_output/graph.html
 [+] Profiles scanned : 3
 Typical Investigation Use Cases
+
+## Manual Profile Analysis Mode
+
+BrowserTrace can also analyze a browser profile directory copied manually from another system.
+
+This is useful in DFIR workflows where investigators acquire browser artifacts from a target system and analyze them offline on a separate workstation.
+
+# Analyze a copied Chromium profile
+python browsertrace_dfir.py --profile-type chromium --profile-path "D:\forensics\Chrome\Default" --output-dir browsertrace_output_manual
+
+# Analyze a copied Firefox profile
+
+python browsertrace_dfir.py --profile-type firefox --profile-path "D:\forensics\Firefox\abcd1234.default-release" --output-dir browsertrace_output_manual
 
 # BrowserTrace DFIR can be used for:
 
